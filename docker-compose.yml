@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  service_a:
+    build:
+      context: .
+      dockerfile: service_a/Dockerfile
+    container_name: service_a
+    ports:
+      - "8001:8001"
+      - "50051:50051"
+    environment:
+      - ENV=production
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  service_b:
+    build:
+      context: .
+      dockerfile: service_b/Dockerfile
+    container_name: service_b
+    ports:
+      - "8002:8002"
+      - "50052:50052"
+    environment:
+      - ENV=production
+    depends_on:
+      service_a:
+        condition: service_healthy
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  service_c:
+    build:
+      context: .
+      dockerfile: service_c/Dockerfile
+    container_name: service_c
+    ports:
+      - "8003:8003"
+      - "50053:50053"
+    environment:
+      - ENV=production
+    depends_on:
+      service_a:
+        condition: service_healthy
+      service_b:
+        condition: service_healthy
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+networks:
+  microservices-network:
+    driver: bridge
