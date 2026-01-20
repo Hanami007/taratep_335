@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 # Mock database
 products_db = {
-    1: {"id": 1, "name": "Laptop", "price": 999.99, "stock": 10},
+    1: {"id": 1, "name": "ธราเทพ จันทร์ดำ 335", "price": 999.99, "stock": 10},
     2: {"id": 2, "name": "Mouse", "price": 29.99, "stock": 50},
     3: {"id": 3, "name": "Keyboard", "price": 79.99, "stock": 30}
 }
